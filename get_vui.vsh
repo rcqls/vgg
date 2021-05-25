@@ -5,34 +5,50 @@ const(
 	ui = "ui"
 )
 args := os.args.clone()
-println("args: $args")
+// println("args: $args")
 
+mut branch := "-b master"
+if args.any(it == "-b") {
+	branch = "-b " + args[args.index("-b") + 1]
+}
+
+mut repo := "https://github.com/vlang/ui"
+if args.any(it == "-r") {
+	repo = args[args.index("-r") + 1]
+	if repo in ["vlang", "rcqls"] {
+		repo = "https://github.com/$repo/ui"
+	} else if repo in ["dev", "devel"] {
+		repo = getenv("HOME") + "/Github/ui"
+	}
+}
 
 if !exists(tp) {mkdir(tp) ?}
 
+// Inside thirdparty folder
 chdir(tp)
-// println(os.execute("pwd").output)
 
-if ("--new-src" in args) && exists("ui") {
+if (("--clean" in args) || ("-c" in args)) && exists("ui") {
 	rmdir_all("ui") ?
 }
 
-branch := "-b devel12"
-repo := "https://github.com/rcqls/ui"
-
-if !exists(ui) {
+if exists(ui) {
+	chdir(ui)
+	println("git pull")
+	execute("git pull")
+	chdir("..")
+} else {
+	println("git clone $branch $repo $ui")
 	execute("git clone $branch $repo $ui")
 }
 
+// Inside root dir
 chdir("..")
-// if ("--new-tgt" in args) && exists(ui) {
-	rmdir_all(ui) ?
-// }
+// remove ui folder
+rmdir_all(ui) ?
 
-// cp_all("ui", "vui", true) ?
 walk("$tp/$ui", fn (f string) {
 	if !f.starts_with("$tp/$ui/.git") {
-		println("file:$f dir: ${dir(f)} base: ${base(f)} ")
+		print("file:$f dir: ${dir(f)} base: ${base(f)} -> ")
 		mut txt := read_file(f) or {panic(err.msg)}
 		txt = txt.replace_each([
 			'import ui', "import vgg.ui"
