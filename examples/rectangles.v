@@ -3,6 +3,7 @@ module main
 import vgg as gg
 import gx
 import os
+import vimgui
 
 const (
 	win_width  = 600
@@ -49,7 +50,7 @@ fn frame(app &App) {
 	C.igText(c"Hello, world!")
 	C.igSliderFloat(c"float", &app.f, 0.0, 1.0, c"%.3f", C.ImGuiSliderFlags_None)
 	if app.show_another_window {
-		C.igShowDemoWindow(&app.show_another_window)
+		vimgui.show_demo_window(&app.show_another_window)
 	}
 	app.gg.end()
 }

@@ -2,9 +2,6 @@
 // Use of this source code is governed by an MIT license that can be found in the LICENSE file.
 module vgg
 
-// import gx
-// import sokol.sapp
-// import sokol.gfx
 import os
 import vsokol
 import vsokol.sgl
