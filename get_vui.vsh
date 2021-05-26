@@ -44,7 +44,7 @@ if exists(ui) {
 // Inside root dir
 chdir("..")
 // remove ui folder
-rmdir_all(ui) ?
+if exists(ui) { rmdir_all(ui) ? }
 
 walk("$tp/$ui", fn (f string) {
 	if !f.starts_with("$tp/$ui/.git") {
